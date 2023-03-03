@@ -4,7 +4,7 @@ from github import InputGitTreeElement # library for interacting with Github API
 from airium import Airium # library for generating and generating html pages
 
 week_days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-week_prog = {week_days[0]:[0,{12:13,13:14}],week_days[1]:[1,{}],week_days[2]:[0,{}],week_days[3]:[0,{}],week_days[4]:[0,{}],week_days[5]:[0,{}],week_days[6]:[0,{}]}
+week_prog = {week_days[0]:[0,{}],week_days[1]:[1,{}],week_days[2]:[0,{}],week_days[3]:[0,{}],week_days[4]:[0,{}],week_days[5]:[0,{}],week_days[6]:[0,{}]}
 token = ""
 def store_token():
     global token
@@ -44,11 +44,9 @@ def writefile():
                 for day in week_days:
                     print(week_prog.get(day))
                     if week_prog.get(day)[0] == 1:
-                        print("DEBUG:A")
                         with html_page.div(klass = "d-flex p-2 justify-content-center alert alert-warning"):
                             html_page("{} <br>Outage due to maintenance".format(day))
                     if week_prog.get(day)[0] == 0:
-                        print("DEBUG:B")
                         with html_page.div(klass = "d-flex p-2 justify-content-center alert alert-primary"):
                             html_page("{} <br>".format(day))
                             for keypair in week_prog.get(day)[1]:
@@ -57,12 +55,32 @@ def writefile():
     html = str(html_page)
     with open('index.html', 'wb') as file_handle:
         file_handle.write(bytes(html, encoding='utf8'))
-#def maintaindate():
-#    date_str = input("Type date (example: 2011-11-04):\n")
-#    print(date_str)
-#    date_time_obj = datetime.fromisoformat(date_str)
-#    #maintain_dates["maintenance"] = date_time_obj
-def enterinfo():
+def setday(day):
+    m_input = input("Is there maintenance? y for yes, n for no\n")
+    if m_input == "y":
+        week_prog[week_days[day-1]][0] = 1
+    else:
+        week_prog[week_days[day-1]][0] = 0
+        print("Enter Hours:")
+        print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
+        print("You can Exit by entering 0")
+        while True:
+            from_h = int(input("From:"))
+            if from_h <= 0:
+                break
+            elif from_h > 24 or from_h < 0:
+                print("INVALID INPUT - Can't Enter more than 24 or less than 0")
+                break
+            to_h = int(input("To:"))
+            if to_h <= 0:
+                break
+            elif to_h > 24 or to_h < 0:
+                print("INVALID INPUT - Can't Enter more than 24 or less than 0")
+                break
+            elif to_h >= from_h:
+                print("INVALID INPUT - To should be more than From")
+            week_prog[week_days[day-1]][1][from_h] = to_h
+def selectday():
     print("1.Sunday")
     print("2.Monday")
     print("3.Tuesday")
@@ -72,126 +90,19 @@ def enterinfo():
     print("7.Sturday")
     u_input = input()
     if u_input == "1":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            week_prog[week_days[0]][0] = 1
-        else:
-            week_prog[week_days[0]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[0]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "2":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            week_prog[week_days[1]][0] = 1
-        else:
-            week_prog[week_days[1]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[1]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "3":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            week_prog[week_days[2]][0] = 1
-        else:
-            week_prog[week_days[2]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[2]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "4":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            week_prog[week_days[3]][0] = 1
-        else:
-            week_prog[week_days[3]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[3]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "5":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            week_prog[week_days[4]][0] = 1
-        else:
-            week_prog[week_days[4]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[4]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "6":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            m_input = input("Is there maintenance? y for yes, n for no\n")
-            week_prog[week_days[5]][0] = 1
-        else:
-            week_prog[week_days[5]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[5]][1][from_h] = to_h
+        setday(int(u_input))
     elif u_input == "7":
-        m_input = input("Is there maintenance? y for yes, n for no\n")
-        if m_input == "y":
-            m_input = input("Is there maintenance? y for yes, n for no\n")
-            week_prog[week_days[6]][0] = 1
-        else:
-            week_prog[week_days[6]][0] = 0
-            print("Enter Hours:")
-            print("Proper format: 10 <Enter> 15 (10AM to 3PM)")
-            print("You can Exit by entering 0")
-            while True:
-                from_h = int(input("From:"))
-                if from_h <= 0:
-                    break
-                to_h = int(input("To:"))
-                if to_h <= 0:
-                    break
-            week_prog[week_days[6]][1][from_h] = to_h
+        setday(int(u_input))
 def menu():
     while True:
         for i in week_prog:
@@ -204,11 +115,11 @@ def menu():
         print("4.Exit")
         R = input()
         if R == "1":
-            enterinfo()
+            selectday()
             while(True):
                 u_input = input("Do you want to enter another date? y for yes, n for no\n")
                 if u_input == "y":
-                    enterinfo()
+                    selectday()
                 else:
                     break
         elif R == "2":
